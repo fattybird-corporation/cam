@@ -56,13 +56,29 @@ function capture(){
 
   document.getElementById("s1").innerText = `R:${r} G:${gVal} B:${b}`;
 
-  send(r, gVal, b, a);
+if (r > 100 && g > 100 && b < 100) {
+  v = "kollane";
+} else if (r > 100 && b > 100 && g < 100) {
+  v = "lilla";
+} else if (g > 100 && b > 100 && r < 100) {
+  v = "sinakasroheline";
+} else if (r > g && r > b) {
+  v = "punane";
+} else if (b > g && b > r) {
+  v = "sinine";
+} else if (g > r && g > b) {
+  v = "roheline";
+} else {
+  v = "määramatu";
 }
 
-function send(r,g,b,a){
+  send(r, gVal, b, a, v);
+}
+
+function send(r,g,b,a, v){
   fetch(URL, {
     method: "POST",
-    body: JSON.stringify({ r, g, b, a })
+    body: JSON.stringify({ r, g, b, a, v })
   });
 }
 </script>

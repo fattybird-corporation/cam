@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <title>Camera</title>
+</head>
+
+<body>
+<button onclick="start()">Start Camera</button><br><br>
+
+<video id="v1" autoplay playsinline style="width:45%"></video>
+<canvas id="c1" width="320" height="240"></canvas><br>
+<canvas id="c2" width="40" height="40"></canvas>
+
+<div id="s1"></div>
+
+<script>
+let player, c, g, g2;
+
+const URL = "https://script.google.com/macros/s/AKfycbwNDhNZz9BdHXaUQ0K6XXy8HVzaRI1145dngDx_AHyTuacQG5GN0Z0dAa-yID31wUHiYw/exec";
+
+async function start() {
+  player = document.getElementById("v1");
+  c = document.getElementById("c1");
+  g = c.getContext("2d");
+  g2 = document.getElementById("c2").getContext("2d");
+
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  player.srcObject = stream;
+
+  setInterval(capture, 2000);
+}
+
+function capture(){
+  g.drawImage(player, 0, 0, c.width, c.height);
+  g.strokeRect(98, 98, 44, 44);
+
+  let img = g.getImageData(100, 100, 40, 40);
+  g2.putImageData(img, 0, 0);
+
+  let data = img.data;
+
+  let r=0, gVal=0, b=0, a=0;
+  let pixels = data.length / 4;
+
+  for (let i = 0; i < data.length; i += 4) {
+    r += data[i];
+    gVal += data[i+1];
+    b += data[i+2];
+    a += data[i+3];
+  }
+
+  r = Math.round(r / pixels);
+  gVal = Math.round(gVal / pixels);
+  b = Math.round(b / pixels);
+  a = Math.round(a / pixels);
+
+  document.getElementById("s1").innerText = `R:${r} G:${gVal} B:${b}`;
+
+  send(r, gVal, b, a);
+}
+
+function send(r,g,b,a){
+  fetch(URL, {
+    method: "POST",
+    body: JSON.stringify({ r, g, b, a })
+  });
+}
+</script>
+</body>
+</html>

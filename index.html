@@ -39,7 +39,7 @@ function capture(){
 
   let data = img.data;
 
-  let r=0, gVal=0, b=0, a=0;
+  let r=0, gVal=0, b=0, a=0, v="";
   let pixels = data.length / 4;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -56,17 +56,17 @@ function capture(){
 
   document.getElementById("s1").innerText = `R:${r} G:${gVal} B:${b}`;
 
-if (r > 100 && g > 100 && b < 100) {
+if (r > 100 && gVal > 100 && b < 100) {
   v = "kollane";
-} else if (r > 100 && b > 100 && g < 100) {
+} else if (r > 100 && b > 100 && gVal < 100) {
   v = "lilla";
-} else if (g > 100 && b > 100 && r < 100) {
+} else if (gVal > 100 && b > 100 && r < 100) {
   v = "sinakasroheline";
-} else if (r > g && r > b) {
+} else if (r > gVal && r > b) {
   v = "punane";
-} else if (b > g && b > r) {
+} else if (b > gVal && b > r) {
   v = "sinine";
-} else if (g > r && g > b) {
+} else if (gVal > r && gVal > b) {
   v = "roheline";
 } else {
   v = "määramatu";
@@ -75,7 +75,7 @@ if (r > 100 && g > 100 && b < 100) {
   send(r, gVal, b, a, v);
 }
 
-function send(r,g,b,a, v){
+function send(r,gVal,b,a, v){
   fetch(URL, {
     method: "POST",
     body: JSON.stringify({ r, g, b, a, v })
